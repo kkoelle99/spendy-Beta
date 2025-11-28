@@ -11,6 +11,16 @@ import {
 import SummaryCards from "./SummaryCards";
 import styles from "../styles/ExpenseTracker.module.css";
 
+const COLORS = [
+  "#0088FE",
+  "#00C49F",
+  "#FFBB28",
+  "#FF8042",
+  "#AA336A",
+  "#9933FF",
+  "#FF33AA",
+];
+
 function getExpensesByCategory(expenses) {
   const categorySums = {};
   expenses.forEach(({ category, amount }) => {
@@ -20,9 +30,6 @@ function getExpensesByCategory(expenses) {
   });
   return Object.entries(categorySums).map(([name, value]) => ({ name, value }));
 }
-
-const categories = ["Food", "Utilities", "Rent", "Entertainment", "Other"];
-const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042", "#AA336A"];
 
 function ExpenseTracker({ budgetData, refreshBudget }) {
   const { getAccessTokenSilently, isAuthenticated } = useAuth0();
@@ -39,16 +46,8 @@ function ExpenseTracker({ budgetData, refreshBudget }) {
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
 
-  // Budget goals
-  const [budgetGoals, setBudgetGoals] = useState(
-    budgetData?.budgetGoals || {
-      Food: 500,
-      Utilities: 200,
-      Rent: 1000,
-      Entertainment: 150,
-      Other: 100,
-    }
-  );
+  const budgetGoals = budgetData?.budgetGoals || {};
+  const categories = Object.keys(budgetGoals);
 
   useEffect(() => {
     if (!isAuthenticated) return;
@@ -110,7 +109,8 @@ function ExpenseTracker({ budgetData, refreshBudget }) {
 
   function handleBudgetGoalChange(category, value) {
     if (value === "" || value < 0) return;
-    setBudgetGoals((prev) => ({ ...prev, [category]: Number(value) }));
+    budgetData.budgetGoals[category] = Number(value);
+    if (refreshBudget) refreshBudget();
   }
 
   async function handleAddExpense(e) {
@@ -121,7 +121,6 @@ function ExpenseTracker({ budgetData, refreshBudget }) {
       return;
     }
 
-    // Check for overspending
     if (
       (totalsByCategory[newExpense.category] || 0) + parsedAmount >
       (budgetGoals[newExpense.category] || 0)
@@ -160,6 +159,7 @@ function ExpenseTracker({ budgetData, refreshBudget }) {
     const parsedAmount = parseFloat(expense.amount);
     if (isNaN(parsedAmount) || parsedAmount < 0)
       return setError("Please enter a valid amount.");
+
     try {
       const token = await getAccessTokenSilently({
         audience: "https://spendy-api",
@@ -175,6 +175,7 @@ function ExpenseTracker({ budgetData, refreshBudget }) {
           body: JSON.stringify({ ...expense, amount: parsedAmount }),
         }
       );
+
       if (!res.ok) throw new Error("Failed to update expense");
       const updated = await res.json();
       setExpenses((prev) =>
@@ -203,9 +204,7 @@ function ExpenseTracker({ budgetData, refreshBudget }) {
         }
       );
       if (!res.ok) throw new Error("Failed to delete expense");
-      setExpenses((prev) =>
-        prev.filter((exp) => String(exp._id) !== String(id))
-      );
+      setExpenses((prev) => prev.filter((exp) => exp._id !== id));
       setEditingExpense(null);
       setError("");
       if (refreshBudget) await refreshBudget();
@@ -247,10 +246,12 @@ function ExpenseTracker({ budgetData, refreshBudget }) {
     <div className={styles.container}>
       <h2>Expense Tracker</h2>
       {error && <p style={{ color: "red" }}>{error}</p>}
+
       {loading ? (
         <p>Loading expenses...</p>
       ) : (
         <>
+          {/* Add Expense Form */}
           <form onSubmit={handleAddExpense} className={styles.form}>
             <input
               type="text"
@@ -260,7 +261,6 @@ function ExpenseTracker({ budgetData, refreshBudget }) {
                 setNewExpense({ ...newExpense, description: e.target.value })
               }
               required
-              className={styles.input}
             />
             <input
               type="number"
@@ -272,7 +272,6 @@ function ExpenseTracker({ budgetData, refreshBudget }) {
               required
               min="0"
               step="0.01"
-              className={styles.input}
             />
             <select
               value={newExpense.category}
@@ -280,7 +279,6 @@ function ExpenseTracker({ budgetData, refreshBudget }) {
                 setNewExpense({ ...newExpense, category: e.target.value })
               }
               required
-              className={styles.input}
             >
               <option value="">Select Category</option>
               {categories.map((cat) => (
@@ -296,22 +294,39 @@ function ExpenseTracker({ budgetData, refreshBudget }) {
                 setNewExpense({ ...newExpense, date: e.target.value })
               }
               required
-              className={styles.input}
             />
-            <button type="submit" className={styles.button}>
-              Add Expense
-            </button>
+            <button type="submit">Add Expense</button>
           </form>
 
+          {/* Date Filter & Export */}
+          <div className={styles.dateFilters}>
+            <label>
+              Start Date:
+              <input
+                type="date"
+                value={startDate}
+                onChange={(e) => setStartDate(e.target.value)}
+              />
+            </label>
+            <label>
+              End Date:
+              <input
+                type="date"
+                value={endDate}
+                onChange={(e) => setEndDate(e.target.value)}
+              />
+            </label>
+            <button onClick={handleExportCSV}>Export CSV</button>
+          </div>
+
+          {/* Budget Goals */}
           <div className={styles.budgetGoalsContainer}>
             <h3>Budget Goals by Category</h3>
-            {categories.map((cat) => {
+            {categories.map((cat, idx) => {
               const spent = totalsByCategory[cat] || 0;
               const goal = budgetGoals[cat] || 0;
               const percent = percentByCategory[cat];
-              let progressColor = "#4caf50";
-              if (percent > 100) progressColor = "#f44336";
-              else if (percent > 75) progressColor = "#ff9800";
+              const progressColor = COLORS[idx % COLORS.length];
 
               return (
                 <div key={cat} className={styles.budgetGoalRow}>
@@ -320,11 +335,10 @@ function ExpenseTracker({ budgetData, refreshBudget }) {
                     type="number"
                     min="0"
                     step="1"
-                    value={budgetGoals[cat]}
+                    value={goal}
                     onChange={(e) =>
                       handleBudgetGoalChange(cat, e.target.value)
                     }
-                    className={styles.input}
                   />
                   <div className={styles.progressBarWrapper}>
                     <div
@@ -332,7 +346,9 @@ function ExpenseTracker({ budgetData, refreshBudget }) {
                       style={{
                         width: `${Math.min(percent, 100)}%`,
                         backgroundColor: progressColor,
+                        transition: "width 0.5s ease-in-out",
                       }}
+                      title={`${percent.toFixed(1)}% used`}
                     />
                   </div>
                   <span>
@@ -343,158 +359,94 @@ function ExpenseTracker({ budgetData, refreshBudget }) {
             })}
           </div>
 
-          <div className={styles.dateFilter}>
-            <label>
-              Start Date:
+          {/* Edit Expense Form */}
+          {editingExpense && (
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                handleSaveEdit(editingExpense);
+              }}
+            >
+              <input
+                type="text"
+                value={editingExpense.description}
+                onChange={(e) =>
+                  setEditingExpense({
+                    ...editingExpense,
+                    description: e.target.value,
+                  })
+                }
+              />
+              <input
+                type="number"
+                value={editingExpense.amount}
+                onChange={(e) =>
+                  setEditingExpense({
+                    ...editingExpense,
+                    amount: e.target.value,
+                  })
+                }
+              />
+              <select
+                value={editingExpense.category}
+                onChange={(e) =>
+                  setEditingExpense({
+                    ...editingExpense,
+                    category: e.target.value,
+                  })
+                }
+              >
+                {categories.map((cat) => (
+                  <option key={cat} value={cat}>
+                    {cat}
+                  </option>
+                ))}
+              </select>
               <input
                 type="date"
-                value={startDate}
-                onChange={(e) => setStartDate(e.target.value)}
-                className={styles.input}
+                value={editingExpense.date}
+                onChange={(e) =>
+                  setEditingExpense({ ...editingExpense, date: e.target.value })
+                }
               />
-            </label>
-            <label>
-              End Date:
-              <input
-                type="date"
-                value={endDate}
-                onChange={(e) => setEndDate(e.target.value)}
-                className={styles.input}
-              />
-            </label>
-            <button onClick={handleExportCSV} className={styles.button}>
-              Export CSV
-            </button>
-          </div>
+              <button type="submit">Save</button>
+              <button onClick={() => setEditingExpense(null)}>Cancel</button>
+            </form>
+          )}
 
-          <div className={styles.expenseList}>
-            {filteredExpenses.length === 0 ? (
-              <p>No expenses added yet.</p>
-            ) : (
-              <table className={styles.table}>
-                <thead>
-                  <tr>
-                    <th>Description</th>
-                    <th>Amount ($)</th>
-                    <th>Category</th>
-                    <th>Date</th>
-                    <th>Actions</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {filteredExpenses.map((expense) => (
-                    <tr key={expense._id}>
-                      <td>
-                        {editingExpense &&
-                        editingExpense._id === expense._id ? (
-                          <input
-                            type="text"
-                            value={editingExpense.description}
-                            onChange={(e) =>
-                              setEditingExpense({
-                                ...editingExpense,
-                                description: e.target.value,
-                              })
-                            }
-                          />
-                        ) : (
-                          expense.description
-                        )}
-                      </td>
-                      <td>
-                        {editingExpense &&
-                        editingExpense._id === expense._id ? (
-                          <input
-                            type="number"
-                            value={editingExpense.amount}
-                            onChange={(e) =>
-                              setEditingExpense({
-                                ...editingExpense,
-                                amount: e.target.value,
-                              })
-                            }
-                          />
-                        ) : (
-                          Number(expense.amount).toFixed(2)
-                        )}
-                      </td>
-                      <td>
-                        {editingExpense &&
-                        editingExpense._id === expense._id ? (
-                          <select
-                            value={editingExpense.category}
-                            onChange={(e) =>
-                              setEditingExpense({
-                                ...editingExpense,
-                                category: e.target.value,
-                              })
-                            }
-                          >
-                            {categories.map((cat) => (
-                              <option key={cat} value={cat}>
-                                {cat}
-                              </option>
-                            ))}
-                          </select>
-                        ) : (
-                          expense.category
-                        )}
-                      </td>
-                      <td>
-                        {editingExpense &&
-                        editingExpense._id === expense._id ? (
-                          <input
-                            type="date"
-                            value={editingExpense.date}
-                            onChange={(e) =>
-                              setEditingExpense({
-                                ...editingExpense,
-                                date: e.target.value,
-                              })
-                            }
-                          />
-                        ) : (
-                          new Date(expense.date).toLocaleDateString()
-                        )}
-                      </td>
-                      <td>
-                        {editingExpense &&
-                        editingExpense._id === expense._id ? (
-                          <>
-                            <button
-                              onClick={() => handleSaveEdit(editingExpense)}
-                            >
-                              Save
-                            </button>
-                            <button onClick={() => setEditingExpense(null)}>
-                              Cancel
-                            </button>
-                          </>
-                        ) : (
-                          <>
-                            <button onClick={() => setEditingExpense(expense)}>
-                              Edit
-                            </button>
-                            <button
-                              onClick={() => handleDeleteExpense(expense._id)}
-                            >
-                              Delete
-                            </button>
-                          </>
-                        )}
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            )}
-          </div>
+          {/* Expenses Table */}
+          <table className={styles.table}>
+            <thead>
+              <tr>
+                <th>Description</th>
+                <th>Amount</th>
+                <th>Category</th>
+                <th>Date</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {filteredExpenses.map((exp) => (
+                <tr key={exp._id}>
+                  <td>{exp.description}</td>
+                  <td>${exp.amount.toFixed(2)}</td>
+                  <td>{exp.category}</td>
+                  <td>{new Date(exp.date).toLocaleDateString()}</td>
+                  <td>
+                    <button onClick={() => setEditingExpense(exp)}>Edit</button>
+                    <button onClick={() => handleDeleteExpense(exp._id)}>
+                      Delete
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
 
-          <SummaryCards
-            expenses={filteredExpenses}
-            budgetData={{ ...budgetData, budgetGoals }}
-          />
+          {/* SummaryCards */}
+          <SummaryCards expenses={filteredExpenses} budgetData={budgetData} />
 
+          {/* Pie Chart */}
           <h3>Expenses by Category</h3>
           {data.length > 0 ? (
             <ResponsiveContainer width="100%" height={300}>
