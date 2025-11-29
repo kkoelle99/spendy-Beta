@@ -15,7 +15,7 @@ const BudgetManager = () => {
       try {
         const token = await getAccessTokenSilently();
 
-        const res = await fetch(`${process.env.REACT_APP_API_URL}/budget`, {
+        const res = await fetch(`${process.env.REACT_APP_API_URL}/api/budget`, {
           method: "GET",
           headers: {
             Authorization: `Bearer ${token}`,
@@ -30,9 +30,22 @@ const BudgetManager = () => {
         const data = await res.json();
         setBudget(data);
         setTotalAmount(data.totalBudget || "");
-        setCategoryGoals(data.categoryGoals || {});
+        // Initialize category goals with existing data or empty values
+        const goals = data.categoryGoals || {};
+        categories.forEach((cat) => {
+          if (!goals[cat]) {
+            goals[cat] = "";
+          }
+        });
+        setCategoryGoals(goals);
       } catch (err) {
         console.error("Fetch budget error:", err.message);
+        // Initialize empty category goals on error
+        const emptyGoals = {};
+        categories.forEach((cat) => {
+          emptyGoals[cat] = "";
+        });
+        setCategoryGoals(emptyGoals);
       }
     };
 
@@ -44,7 +57,7 @@ const BudgetManager = () => {
     try {
       const token = await getAccessTokenSilently();
 
-      const res = await fetch(`${process.env.REACT_APP_API_URL}/budget`, {
+      const res = await fetch(`${process.env.REACT_APP_API_URL}/api/budget`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -78,14 +91,17 @@ const BudgetManager = () => {
     try {
       const token = await getAccessTokenSilently();
 
-      const res = await fetch(`${process.env.REACT_APP_API_URL}/budget/goals`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({ categoryGoals }),
-      });
+      const res = await fetch(
+        `${process.env.REACT_APP_API_URL}/api/budget/goals`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({ categoryGoals }),
+        }
+      );
 
       if (!res.ok) {
         const error = await res.json();

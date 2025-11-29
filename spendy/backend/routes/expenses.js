@@ -8,6 +8,10 @@ router.get('/', async (req, res) => {
   console.log('Received token user info:', req.user);
 
   try {
+    if (!req.user || !req.user.sub) {
+      return res.status(401).json({ message: 'Unauthorized: No user info in token' });
+    }
+    
     const userId = req.user.sub;
     const expenses = await Expense.find({ userId });
     res.json(expenses);
@@ -22,6 +26,10 @@ router.post('/', async (req, res) => {
   console.log('User info:', req.user);
 
   try {
+    if (!req.user || !req.user.sub) {
+      return res.status(401).json({ message: 'Unauthorized: No user info in token' });
+    }
+    
     const userId = req.user.sub;
     const { description, amount, category, date } = req.body;
 
@@ -50,6 +58,10 @@ router.put('/:id', async (req, res) => {
   console.log('User info:', req.user);
 
   try {
+    if (!req.user || !req.user.sub) {
+      return res.status(401).json({ message: 'Unauthorized: No user info in token' });
+    }
+    
     const userId = req.user.sub;
     const expenseId = req.params.id;
     const { description, amount, category, date } = req.body;
@@ -81,6 +93,10 @@ router.delete('/:id', async (req, res) => {
   console.log('User info:', req.user);
 
   try {
+    if (!req.user || !req.user.sub) {
+      return res.status(401).json({ message: 'Unauthorized: No user info in token' });
+    }
+    
     const userId = req.user.sub;
     const expenseId = req.params.id;
 

@@ -21,7 +21,10 @@ app.use(cors({
 app.use(express.json());
 
 // MongoDB connection
-mongoose.connect(process.env.MONGO_URI)
+const mongoUri = process.env.MONGO_URI || 'mongodb://localhost:27017/spendy';
+console.log('Connecting to MongoDB:', mongoUri);
+
+mongoose.connect(mongoUri)
   .then(() => console.log('MongoDB connected'))
   .catch(err => console.error('MongoDB connection error:', err));
 
@@ -38,14 +41,6 @@ const jwtCheck = jwt({
   issuer: 'https://dev-rcl8pcpcwm5cxd17.us.auth0.com/',
   algorithms: ['RS256'],
   requestProperty: 'user'
-});
-
-app.use((err, req, res, next) => {
-  if (err.name === 'UnauthorizedError') {
-    console.error('JWT Error:', err);
-    return res.status(401).json({ message: 'Invalid token', details: err.message });
-  }
-  next(err);
 });
 
 // Import routers
@@ -71,6 +66,23 @@ app.get('/api/test-auth', jwtCheck, (req, res) => {
 // Root route (health check)
 app.get('/', (req, res) => {
   res.send('Spendy API is running with Auth0 authentication!');
+});
+
+// Error handlers AFTER all routes
+app.use((err, req, res, next) => {
+  if (err.name === 'UnauthorizedError') {
+    console.error('JWT Error:', err);
+    console.error('Error code:', err.code);
+    console.error('Error message:', err.message);
+    return res.status(401).json({ message: 'Invalid token', details: err.message });
+  }
+  next(err);
+});
+
+// Catch-all error handler for unhandled errors
+app.use((err, req, res, next) => {
+  console.error('Unhandled error:', err);
+  res.status(500).json({ message: 'Internal server error', details: err.message });
 });
 
 // Server listen

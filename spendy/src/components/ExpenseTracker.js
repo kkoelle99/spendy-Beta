@@ -21,6 +21,9 @@ const COLORS = [
   "#FF33AA",
 ];
 
+// Define available categories
+const AVAILABLE_CATEGORIES = ["Food", "Utilities", "Rent", "Entertainment", "Other"];
+
 function getExpensesByCategory(expenses) {
   const categorySums = {};
   expenses.forEach(({ category, amount }) => {
@@ -37,6 +40,7 @@ function ExpenseTracker({ budgetData, refreshBudget }) {
   const [editingExpense, setEditingExpense] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [budgetGoals, setBudgetGoals] = useState({});
   const [newExpense, setNewExpense] = useState({
     description: "",
     amount: "",
@@ -46,8 +50,21 @@ function ExpenseTracker({ budgetData, refreshBudget }) {
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
 
-  const budgetGoals = budgetData?.budgetGoals || {};
-  const categories = Object.keys(budgetGoals);
+  const categories = AVAILABLE_CATEGORIES;
+
+  // Initialize budget goals from budgetData
+  useEffect(() => {
+    if (budgetData?.budgetGoals) {
+      setBudgetGoals(budgetData.budgetGoals);
+    } else {
+      // Initialize with empty values for all categories
+      const emptyGoals = {};
+      AVAILABLE_CATEGORIES.forEach((cat) => {
+        emptyGoals[cat] = "";
+      });
+      setBudgetGoals(emptyGoals);
+    }
+  }, [budgetData]);
 
   useEffect(() => {
     if (!isAuthenticated) return;
@@ -60,7 +77,7 @@ function ExpenseTracker({ budgetData, refreshBudget }) {
           scope: "read:expenses write:budget",
         });
 
-        const res = await fetch(`${process.env.REACT_APP_API_URL}/expenses`, {
+        const res = await fetch(`${process.env.REACT_APP_API_URL}/api/expenses`, {
           headers: {
             Authorization: `Bearer ${token}`,
             "Content-Type": "application/json",
@@ -108,9 +125,22 @@ function ExpenseTracker({ budgetData, refreshBudget }) {
   }, {});
 
   function handleBudgetGoalChange(category, value) {
-    if (value === "" || value < 0) return;
-    budgetData.budgetGoals[category] = Number(value);
-    if (refreshBudget) refreshBudget();
+    // Allow empty string to clear the field
+    if (value === "") {
+      setBudgetGoals((prev) => ({
+        ...prev,
+        [category]: "",
+      }));
+      return;
+    }
+    
+    const numValue = Number(value);
+    if (isNaN(numValue) || numValue < 0) return;
+    
+    setBudgetGoals((prev) => ({
+      ...prev,
+      [category]: numValue,
+    }));
   }
 
   async function handleAddExpense(e) {
@@ -135,7 +165,7 @@ function ExpenseTracker({ budgetData, refreshBudget }) {
         audience: "https://spendy-api",
         scope: "write:budget",
       });
-      const res = await fetch(`${process.env.REACT_APP_API_URL}/expenses`, {
+      const res = await fetch(`${process.env.REACT_APP_API_URL}/api/expenses`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -165,7 +195,7 @@ function ExpenseTracker({ budgetData, refreshBudget }) {
         audience: "https://spendy-api",
       });
       const res = await fetch(
-        `${process.env.REACT_APP_API_URL}/expenses/${expense._id}`,
+        `${process.env.REACT_APP_API_URL}/api/expenses/${expense._id}`,
         {
           method: "PUT",
           headers: {
@@ -197,7 +227,7 @@ function ExpenseTracker({ budgetData, refreshBudget }) {
         audience: "https://spendy-api",
       });
       const res = await fetch(
-        `${process.env.REACT_APP_API_URL}/expenses/${id}`,
+        `${process.env.REACT_APP_API_URL}/api/expenses/${id}`,
         {
           method: "DELETE",
           headers: { Authorization: `Bearer ${token}` },
@@ -335,7 +365,8 @@ function ExpenseTracker({ budgetData, refreshBudget }) {
                     type="number"
                     min="0"
                     step="1"
-                    value={goal}
+                    placeholder="0"
+                    value={budgetGoals[cat]}
                     onChange={(e) =>
                       handleBudgetGoalChange(cat, e.target.value)
                     }
