@@ -1,43 +1,51 @@
+/* ------------------- Footer.module.css ------------------- */
+
+/* Import theme variables */
+@import "./theme.css";
+
 .footer {
   text-align: center;
-  padding: 20px;
-  background-color: #f8fafc;
-  border-top: 1px solid #ccc;
-  color: #333;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  padding: 1.5rem 2rem;
+  background-color: var(--background);
+  border-top: 1px solid var(--border);
+  color: var(--text-secondary);
+  font-family: var(--font-primary);
   font-size: 0.9rem;
 }
 
 .info {
-  margin-bottom: 10px;
+  margin-bottom: 0.75rem;
 }
 
 .info a {
   text-decoration: none;
-  color: #007bff;
+  color: var(--primary);
   font-weight: 600;
-  margin: 0 5px;
+  margin: 0 0.25rem;
+  transition: color var(--transition-fast);
 }
 
 .info a:hover {
+  color: var(--primary-hover);
   text-decoration: underline;
 }
 
 .social {
-  margin: 10px 0;
+  margin: 0.5rem 0;
 }
 
 .icon {
   font-size: 1.5rem;
-  margin: 0 10px;
-  color: #007bff;
+  margin: 0 0.5rem;
+  color: var(--primary);
   cursor: pointer;
+  transition: color var(--transition-fast);
 }
 
 .icon:hover {
-  color: #0056b3;
+  color: var(--primary-hover);
 }
 
 .contact {
-  margin-top: 10px;
+  margin-top: 0.5rem;
 }

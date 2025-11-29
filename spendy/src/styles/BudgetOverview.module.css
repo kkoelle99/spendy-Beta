@@ -1,36 +1,45 @@
+/* ------------------- BudgetOverview.module.css ------------------- */
+
+/* Import theme variables */
+@import "./theme.css";
+
+/* ------------------- Container ------------------- */
 .container {
   text-align: center;
-  padding: 20px;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background-color: #f1f5f9;
+  padding: 2rem;
+  font-family: var(--font-primary);
+  background-color: var(--background);
   min-height: 100vh;
-  color: #333;
+  color: var(--text-primary);
 }
 
+/* ------------------- Titles ------------------- */
 .title {
   font-size: 2.5rem;
-  margin-bottom: 20px;
-  color: #1f2937;
+  margin-bottom: 1.25rem;
+  color: var(--text-primary);
 }
 
 .welcome {
   font-size: 1.2rem;
-  margin-bottom: 20px;
-  color: #4b5563;
+  margin-bottom: 1.25rem;
+  color: var(--text-secondary);
 }
 
+/* ------------------- Budget Container ------------------- */
 .budgetContainer {
   margin: 0 auto;
   max-width: 800px;
-  padding: 20px;
-  border-radius: 10px;
-  background-color: #ffffff;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  padding: 2rem;
+  border-radius: var(--radius-large);
+  background-color: var(--surface);
+  box-shadow: var(--shadow-medium);
   overflow-x: auto;
 }
 
+/* ------------------- Expense Table ------------------- */
 .expenseList {
-  margin-top: 20px;
+  margin-top: 1.25rem;
 }
 
 .table {
@@ -38,71 +47,72 @@
   border-collapse: collapse;
 }
 
-.th, .td {
+.th,
+.td {
   text-align: left;
-  padding: 12px;
-  border-bottom: 1px solid #e5e7eb;
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid var(--border);
 }
 
 .th {
-  background-color: #f9fafb;
-  color: #1f2937;
+  background-color: var(--background);
+  color: var(--text-primary);
   font-weight: 600;
 }
 
 .td {
-  color: #374151;
+  color: var(--text-secondary);
 }
 
 .td-actions {
   text-align: center;
 }
 
+/* ------------------- Buttons ------------------- */
 .button {
-  padding: 8px 12px;
+  padding: 0.5rem 1rem;
   font-size: 0.9rem;
-  color: white;
-  background-color: #007bff;
+  color: #fff;
+  background-color: var(--primary);
   border: none;
-  border-radius: 5px;
+  border-radius: var(--radius-small);
   cursor: pointer;
-  transition: background-color 0.3s ease;
+  transition: all var(--transition-medium);
 }
 
 .button:hover {
-  background-color: #0056b3;
+  background-color: var(--primary-hover);
 }
 
 .edit-button {
-  background-color: #10b981;
+  background-color: var(--secondary);
 }
-
 .edit-button:hover {
-  background-color: #059669;
+  background-color: var(--secondary-hover);
 }
 
 .delete-button {
-  background-color: #ef4444;
+  background-color: var(--accent);
 }
-
 .delete-button:hover {
-  background-color: #dc2626;
+  background-color: var(--accent-hover);
 }
 
+/* ------------------- Error ------------------- */
 .error {
-  color: red;
+  color: var(--danger);
   font-size: 1rem;
-  margin-bottom: 20px;
+  margin-bottom: 1.25rem;
 }
 
-/* Mobile Styles */
+/* ------------------- Responsive ------------------- */
 @media (max-width: 768px) {
   .container {
-    padding: 10px;
+    padding: 1rem;
   }
 
   .budgetContainer {
-    padding: 15px;
+    padding: 1.25rem;
     box-shadow: none;
   }
 
@@ -110,7 +120,7 @@
     display: block;
     overflow-x: auto;
     white-space: nowrap;
-    font-size: 12px;
+    font-size: 0.85rem;
   }
 
   .title {
@@ -121,3 +131,4 @@
     font-size: 1rem;
   }
 }
+/* End of BudgetOverview.module.css */

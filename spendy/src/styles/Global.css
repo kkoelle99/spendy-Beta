@@ -1,16 +1,31 @@
-/* ------------------- App.css ------------------- */
+/* ----------------- Root Variables ----------------- */
+:root {
+  --primary: #667eea;
+  --primary-hover: #5865d6;
+  --secondary: #48bb78;
+  --secondary-hover: #38a169;
+  --accent: #f56565;
+  --accent-hover: #e53e3e;
+  --background: #f9fafb;
+  --surface: #ffffff;
+  --text-primary: #1a202c;
+  --text-secondary: #4a5568;
+  --border: #e2e8f0;
+  --warning: #ed8936;
+  --danger: #f56565;
+  --radius: 0.75rem;
+  --transition: 0.3s ease;
+}
 
-/* Import theme variables at the top */
-@import "./theme.css";
-
-/* ------------------- Global Body ------------------- */
+/* ----------------- Global Body ----------------- */
 body {
-  font-family: var(--font-primary);
+  font-family: "Inter", sans-serif;
   color: var(--text-primary);
   background-color: var(--background);
   margin: 0;
   padding: 0;
-  line-height: 1.5;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
 }
 
 h1,
@@ -22,22 +37,27 @@ h6 {
   font-weight: 700;
   color: var(--text-primary);
   margin: 0 0 0.5rem 0;
+  line-height: 1.3;
 }
 
 p {
   font-weight: 400;
   color: var(--text-secondary);
   margin: 0.5rem 0;
+  line-height: 1.5;
 }
 
-/* ------------------- Buttons ------------------- */
+/* ----------------- Buttons ----------------- */
 .btn {
-  border-radius: var(--radius-medium);
-  padding: 0.5rem 1rem;
+  border-radius: var(--radius);
+  padding: 0.6rem 1.2rem;
   font-weight: 600;
   cursor: pointer;
-  transition: all var(--transition-medium);
+  transition: all var(--transition);
   border: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .btn-primary {
@@ -67,36 +87,34 @@ p {
   transform: translateY(-2px);
 }
 
-/* ------------------- Cards ------------------- */
+/* ----------------- Cards ----------------- */
 .card {
   background: var(--surface);
-  border-radius: var(--radius-medium);
-  box-shadow: var(--shadow-light);
+  border-radius: var(--radius);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
   padding: 1.5rem;
-  transition: all var(--transition-medium);
+  transition: all var(--transition);
 }
 
 .card:hover {
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-medium);
+  transform: translateY(-3px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
 }
 
-/* ------------------- Containers ------------------- */
+/* ----------------- Containers ----------------- */
 .container {
   max-width: 1200px;
   margin: 0 auto;
   padding: 2rem;
 }
 
-/* ------------------- Status Colors ------------------- */
+/* ----------------- Status Colors ----------------- */
 .success {
   border-left: 4px solid var(--secondary);
 }
-
 .warning {
   border-left: 4px solid var(--warning);
 }
-
 .danger {
   border-left: 4px solid var(--danger);
   animation: pulse 1.5s infinite;
@@ -112,47 +130,58 @@ p {
   }
 }
 
-/* ------------------- Progress Bars ------------------- */
+/* ----------------- Progress Bars ----------------- */
 .progressBar {
   height: 8px;
   background: var(--border);
-  border-radius: var(--radius-small);
+  border-radius: 4px;
   overflow: hidden;
   margin-top: 0.5rem;
 }
 
 .progress {
   height: 100%;
-  border-radius: var(--radius-small);
-  transition: width 0.5s ease, background 0.3s ease;
+  border-radius: 4px;
+  transition: width 0.5s ease, background var(--transition);
 }
 
-/* ------------------- Lists ------------------- */
+/* ----------------- Lists ----------------- */
 .upcomingList {
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
+  gap: 1rem;
 }
 
 .upcomingCard {
   padding: 1rem;
   background: var(--surface);
-  border-radius: 0.5rem;
+  border-radius: var(--radius);
   border-left: 5px solid var(--primary);
-  transition: all var(--transition-medium);
+  transition: all var(--transition);
 }
 
-/* ------------------- Error ------------------- */
+.upcomingCard:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+/* ----------------- Error ----------------- */
 .error {
   color: var(--danger);
   padding: 1rem;
   background: #fff5f5;
   border-left: 4px solid var(--danger);
-  border-radius: var(--radius-small);
+  border-radius: 0.25rem;
   margin: 1rem 0;
 }
 
-/* ------------------- Responsive ------------------- */
+/* ----------------- Responsive ----------------- */
+@media (max-width: 1024px) {
+  .container {
+    padding: 1.5rem;
+  }
+}
+
 @media (max-width: 768px) {
   .container {
     padding: 1rem;
@@ -182,4 +211,3 @@ p {
     font-size: 1rem;
   }
 }
-/* End of App.css */

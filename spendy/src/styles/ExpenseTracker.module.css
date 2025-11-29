@@ -1,40 +1,46 @@
+/* ------------------- ExpenseTracker.module.css ------------------- */
+
+/* Import theme variables */
+@import "./theme.css";
+
+/* ------------------- Container ------------------- */
 .container {
-  max-width: 700px;
-  margin: 40px auto;
-  padding: 20px;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background-color: #f8fafc;
-  border-radius: 8px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  text-align: center;
+  padding: 2rem;
+  font-family: var(--font-primary);
+  background-color: var(--background);
+  min-height: 100vh;
+  color: var(--text-primary);
 }
 
-.form {
-  display: flex;
-  gap: 10px;
-  flex-wrap: wrap;
-  margin-bottom: 20px;
+/* ------------------- Titles ------------------- */
+.title {
+  font-size: 2.5rem;
+  margin-bottom: 1.5rem;
+  font-weight: 700;
+  color: var(--text-primary);
 }
 
-.input {
-  flex: 1 1 150px;
-  padding: 8px 10px;
-  font-size: 1rem;
-  border-radius: 4px;
-  border: 1px solid #ccc;
+.welcome {
+  font-size: 1.2rem;
+  margin-bottom: 2rem;
+  color: var(--text-secondary);
 }
 
-.button {
-  padding: 10px 20px;
-  background-color: #007bff;
-  color: white;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  font-weight: 600;
-}
-
-.expenseList {
+/* ------------------- Budget Container ------------------- */
+.budgetContainer {
+  margin: 0 auto;
+  max-width: 800px;
+  padding: 2rem;
+  border-radius: var(--radius-large);
+  background-color: var(--surface);
+  box-shadow: var(--shadow-medium);
   overflow-x: auto;
+}
+
+/* ------------------- Expense Table ------------------- */
+.expenseList {
+  margin-top: 2rem;
 }
 
 .table {
@@ -42,54 +48,86 @@
   border-collapse: collapse;
 }
 
-.th, .td {
-  border-bottom: 1px solid #eee;
-  padding: 8px;
+.th,
+.td {
   text-align: left;
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid var(--border);
 }
 
 .th {
-  border-bottom: 2px solid #ddd;
+  background-color: var(--background);
+  color: var(--text-primary);
+  font-weight: 600;
 }
 
-/* Mobile Styles */
+.td {
+  color: var(--text-secondary);
+}
+
+.td-actions {
+  text-align: center;
+}
+
+/* ------------------- Buttons ------------------- */
+.button {
+  padding: 0.5rem 1rem;
+  font-size: 0.9rem;
+  color: #fff;
+  border: none;
+  border-radius: var(--radius-small);
+  cursor: pointer;
+  transition: all var(--transition-medium);
+}
+
+.button:hover {
+  transform: translateY(-1px);
+}
+
+.edit-button {
+  background-color: var(--secondary);
+}
+.edit-button:hover {
+  background-color: var(--secondary-hover);
+}
+
+.delete-button {
+  background-color: var(--accent);
+}
+.delete-button:hover {
+  background-color: var(--accent-hover);
+}
+
+/* ------------------- Error ------------------- */
+.error {
+  color: var(--danger);
+  font-size: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+/* ------------------- Mobile Styles ------------------- */
 @media (max-width: 768px) {
   .container {
-    padding: 10px;
+    padding: 1rem;
   }
 
-  .form {
-    flex-direction: column;
-    gap: 8px;
-  }
-
-  .input {
-    width: 100%;
-  }
-
-  .button {
-    width: 100%;
+  .budgetContainer {
+    padding: 1.25rem;
+    box-shadow: none;
   }
 
   .table {
-    font-size: 12px;
     display: block;
     overflow-x: auto;
     white-space: nowrap;
+    font-size: 0.85rem;
   }
 
-  .budgetGoalRow {
-    flex-direction: column;
-    align-items: flex-start;
-    width: 100%;
+  .title {
+    font-size: 2rem;
   }
 
-  .budgetGoalRow input {
-    width: 100%;
-    margin-bottom: 5px;
-  }
-
-  .progressBarWrapper {
-    width: 100%;
+  .welcome {
+    font-size: 1rem;
   }
 }

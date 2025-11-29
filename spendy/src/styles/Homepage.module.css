@@ -1,5 +1,7 @@
-/* Homepage.module.css */
+/* ------------------- Homepage.module.css ------------------- */
 
+/* Import theme variables */
+@import "./theme.css";
 
 .container {
   display: flex;
@@ -7,84 +9,87 @@
   align-items: center;
   justify-content: center;
   text-align: center;
-  padding: 80px 20px;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background: linear-gradient(135deg, #f8fafc, #e1e8f0);
-  height: 100vh; /* Full viewport height */
+  padding: 6rem 2rem;
+  font-family: var(--font-primary);
+  background: linear-gradient(135deg, var(--background), #e1e8f0);
+  min-height: 100vh;
 }
 
 .logo {
-  width: 300px;
+  width: 250px;
   height: auto;
-  margin: 0 auto 30px; /* Center image and add space below */
+  margin-bottom: 2rem;
   object-fit: contain;
 }
 
 .title {
   font-size: 3rem;
-  margin-bottom: 15px;
-  color: #222;
+  margin-bottom: 1rem;
+  color: var(--text-primary);
+  font-weight: 700;
 }
 
 .tagline {
-  font-size: 1.3rem;
-  margin-bottom: 50px;
-  color: #444;
+  font-size: 1.25rem;
+  margin-bottom: 3rem;
+  color: var(--text-secondary);
   line-height: 1.5;
+  max-width: 600px;
 }
 
 .button {
-  padding: 14px 36px;
-  font-size: 1.2rem;
-  background-color: #007bff;
+  padding: 0.75rem 2.25rem;
+  font-size: 1.1rem;
+  background-color: var(--primary);
   border: none;
-  border-radius: 8px;
-  color: white;
+  border-radius: 0.75rem;
+  color: #fff;
   cursor: pointer;
-  box-shadow: 0 4px 8px rgba(0, 123, 255, 0.3);
-  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+  box-shadow: 0 4px 8px rgba(102, 126, 234, 0.3);
+  transition: all 0.3s ease;
 }
 
 .button:hover {
-  background-color: #0056b3;
-  box-shadow: 0 6px 12px rgba(0, 86, 179, 0.5);
+  background-color: #5865d6;
+  box-shadow: 0 6px 12px rgba(88, 101, 214, 0.5);
+  transform: translateY(-2px);
 }
 
 .features {
-  margin-top: 50px;
+  margin-top: 4rem;
   text-align: left;
-  max-width: 600px;
-  color: #555;
+  max-width: 650px;
+  color: var(--text-secondary);
 }
 
 .features h2 {
   font-size: 1.8rem;
-  color: #222;
-  margin-bottom: 20px;
+  color: var(--text-primary);
+  margin-bottom: 1rem;
 }
 
 .features ul {
-  list-style-type: none;
+  list-style: none;
   padding: 0;
 }
 
 .features li {
-  margin-bottom: 10px;
-  font-size: 1.2rem;
+  margin-bottom: 0.75rem;
+  font-size: 1.1rem;
   line-height: 1.5;
   position: relative;
 }
 
 .features li::before {
-  content: '✔';
-  color: #007bff;
-  margin-right: 10px;
+  content: "✔";
+  color: var(--primary);
+  margin-right: 0.5rem;
 }
 
 .testimonials {
-  margin-top: 50px;
+  margin-top: 3rem;
   font-style: italic;
-  color: #333;
-  border-left: 4px solid #007bff;
-  padding-left: 15px;
+  color: var(--text-primary);
+  border-left: 4px solid var(--primary);
+  padding-left: 1rem;
 }

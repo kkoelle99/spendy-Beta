@@ -1,9 +1,43 @@
-/* ------------------- App.css ------------------- */
+/* ------------------- theme.css ------------------- */
 
-/* Import theme variables at the top */
-@import "./theme.css";
+/* ------------------- Root Variables ------------------- */
+:root {
+  /* Colors */
+  --primary: #667eea;
+  --primary-hover: #5865d6;
+  --secondary: #48bb78;
+  --secondary-hover: #38a169;
+  --accent: #f56565;
+  --accent-hover: #e53e3e;
+  --background: #f9fafb;
+  --surface: #ffffff;
+  --text-primary: #1a202c;
+  --text-secondary: #4a5568;
+  --border: #e2e8f0;
+  --warning: #ed8936;
+  --danger: #f56565;
 
-/* ------------------- Global Body ------------------- */
+  /* Shadows */
+  --shadow-light: 0 2px 6px rgba(0, 0, 0, 0.08);
+  --shadow-medium: 0 4px 12px rgba(0, 0, 0, 0.12);
+  --shadow-heavy: 0 6px 18px rgba(0, 0, 0, 0.15);
+
+  /* Border radius */
+  --radius-small: 4px;
+  --radius-medium: 8px;
+  --radius-large: 12px;
+
+  /* Fonts */
+  --font-primary: "Inter", sans-serif;
+  --font-secondary: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+
+  /* Transitions */
+  --transition-fast: 0.2s ease;
+  --transition-medium: 0.3s ease;
+  --transition-slow: 0.5s ease;
+}
+
+/* ------------------- Global Styles ------------------- */
 body {
   font-family: var(--font-primary);
   color: var(--text-primary);
@@ -81,22 +115,13 @@ p {
   box-shadow: var(--shadow-medium);
 }
 
-/* ------------------- Containers ------------------- */
-.container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 2rem;
-}
-
 /* ------------------- Status Colors ------------------- */
 .success {
   border-left: 4px solid var(--secondary);
 }
-
 .warning {
   border-left: 4px solid var(--warning);
 }
-
 .danger {
   border-left: 4px solid var(--danger);
   animation: pulse 1.5s infinite;
@@ -111,75 +136,4 @@ p {
     box-shadow: 0 0 12px rgba(245, 101, 101, 0.9);
   }
 }
-
-/* ------------------- Progress Bars ------------------- */
-.progressBar {
-  height: 8px;
-  background: var(--border);
-  border-radius: var(--radius-small);
-  overflow: hidden;
-  margin-top: 0.5rem;
-}
-
-.progress {
-  height: 100%;
-  border-radius: var(--radius-small);
-  transition: width 0.5s ease, background 0.3s ease;
-}
-
-/* ------------------- Lists ------------------- */
-.upcomingList {
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
-}
-
-.upcomingCard {
-  padding: 1rem;
-  background: var(--surface);
-  border-radius: 0.5rem;
-  border-left: 5px solid var(--primary);
-  transition: all var(--transition-medium);
-}
-
-/* ------------------- Error ------------------- */
-.error {
-  color: var(--danger);
-  padding: 1rem;
-  background: #fff5f5;
-  border-left: 4px solid var(--danger);
-  border-radius: var(--radius-small);
-  margin: 1rem 0;
-}
-
-/* ------------------- Responsive ------------------- */
-@media (max-width: 768px) {
-  .container {
-    padding: 1rem;
-  }
-  h1 {
-    font-size: 1.8rem;
-  }
-  h2 {
-    font-size: 1.5rem;
-  }
-  h3 {
-    font-size: 1.2rem;
-  }
-}
-
-@media (max-width: 480px) {
-  .container {
-    padding: 0.75rem;
-  }
-  h1 {
-    font-size: 1.4rem;
-  }
-  h2 {
-    font-size: 1.2rem;
-  }
-  h3 {
-    font-size: 1rem;
-  }
-}
-/* End of App.css */
+/* End of theme.css */
